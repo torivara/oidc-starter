@@ -59,15 +59,20 @@ Authentication from a Pull Request did not work with this setting only, so I nee
 - Create Resource Group
 - Create Storage Account
 - Create Storage Account Container
+- Add service principal as blob data contributor
 
 ```pwsh
 $randomNumber=(Get-Random -Maximum 10000)
+$appName='terraform-oidc-test-app'
 $resourceGroupName="tia-testingterraform$randomNumber-rg"
+$subscriptionId=(Get-AzContext).Subscription.Id
 $location='westeurope'
 $storageAccountName="testingterraform$randomNumber"
+$appId=(az ad sp list --display-name $appName --query '[].appId' -o tsv)
 az group create -n $resourceGroupName -l $location
 az storage account create -n $storageAccountName -g $resourceGroupName -l $location --sku Standard_LRS
 az storage container create -n terraformstate --account-name $storageAccountName
+az role assignment create --role 'Storage Blob Data Contributor' --assignee-object-id  "$appId" --assignee-principal-type ServicePrincipal --scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Storage/storageAccounts/$storageAccountName"
 
 Write-Host "These are the terraform settings you need to update in main.tf`n--------------------------------------------------------------`nresource_group_name = `"$resourceGroupName`"`nstorage_account_name = `"$storageAccountName`"`ncontainer_name = `"terraformstate`"`nkey = `"terraformstate.tfstate`""
 ```
