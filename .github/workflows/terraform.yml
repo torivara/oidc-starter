@@ -53,6 +53,10 @@ jobs:
       working-directory: ${{ env.workingDir }}
       run: terraform fmt
 
+    - name: Terraform Init
+      working-directory: ${{ env.workingDir }}
+      run: terraform init
+
     - name: Terraform Validate
       working-directory: ${{ env.workingDir }}
       run: terraform validate
