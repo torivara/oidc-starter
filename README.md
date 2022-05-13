@@ -24,11 +24,35 @@ Write-Host "These are the "secrets" you need to add to GitHub`n-----------------
 
 Follow [this guide](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#add-federated-credentials) from Microsoft for updated guidance.
 
+Some specific info and tips:
+
+Choose `GitHub Actions deploying Azure resources`
+
+![](.img/2022-05-13-13-45-43.png)
+
+Added credential for user `torivara`:
+
+![](.img/2022-05-13-13-46-01.png)
+
+*Could be organization also, but for this demo it is only my personal user.*
+
+Add configuration for `main` branch of `tf-oidc-starter` repository:
+
+![](.img/2022-05-13-13-46-11.png)
+
+*Replace these with values from you own, though main branch might be the same, repository name is probably not.*
+
+Authentication from a Pull Request did not work with this setting only, so I needed to add Pull Request entity type also:
+
+![](.img/2022-05-13-13-47-19.png)
+
 ### Create GitHub secrets
 
-AAD_APP_ID – Will be the app id/client id from above
-AAD_TENANT_ID – The Azure AD tenant Id from above
-AZURE_SUBSCRIPTION_ID – Subscription Id from above
+![](.img/2022-05-13-13-44-54.png)
+
+- AAD_APP_ID – Will be the app id/client id from above
+- AAD_TENANT_ID – The Azure AD tenant Id from above
+- AZURE_SUBSCRIPTION_ID – Subscription Id from above
 
 ## Prereqs Terraform
 
@@ -47,3 +71,5 @@ az storage container create -n terraformstate --account-name $storageAccountName
 
 Write-Host "These are the terraform settings you need to update in main.tf`n--------------------------------------------------------------`nresource_group_name = `"$resourceGroupName`"`nstorage_account_name = `"$storageAccountName`"`ncontainer_name = `"terraformstate`"`nkey = `"terraformstate.tfstate`""
 ```
+
+Waiting for [Terraform v1.2.0](https://github.com/hashicorp/terraform-provider-azurerm/pull/16555)...
