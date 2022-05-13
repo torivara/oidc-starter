@@ -32,12 +32,12 @@ resource "azurerm_subnet" "subnet" {
   name                 = "subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = "10.0.0.0/25"
+  address_prefixes     = ["10.0.0.0/25"]
 }
 # Create Subnet
 resource "azurerm_subnet" "subnet2" {
   name                 = "subnet2"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = "10.0.0.128/25"
+  address_prefixes     = ["10.0.0.128/25"]
 }
