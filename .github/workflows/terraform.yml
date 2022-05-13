@@ -21,6 +21,7 @@ defaults:
 
 env:
   workingDir: 'terraform'
+  OIDC: false
 
 jobs:
   terraform:
@@ -33,6 +34,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: 'Az CLI login'
+      if: (env.OIDC == true)
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AAD_APP_ID }}
@@ -40,10 +42,12 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
-    - name: 'Run az commands'
-      run: |
-        az account show
-        az group list -o table
+    - name: 'Az CLI login'
+      if: (env.OIDC != true)
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true 
       
     - uses: hashicorp/setup-terraform@v2
       with:
