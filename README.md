@@ -11,12 +11,19 @@ Repository for starting out with Terraform to Azure with OpenID Connect authenti
 ### Create Azure AD App Registration
 
 ```pwsh
-az ad app create --display-name myApp
-az ad sp create --id <appId>
-az role assignment create --role contributor --subscription $subscriptionId --assignee-object-id  $assigneeObjectId --assignee-principal-type ServicePrincipal --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName
-```
+$context = get-azcontext
+$subscriptionId = $context.subscription.id
+$appId = (az ad app create --display-name myApp | convertFrom-json).appId
+$objectId = (az ad sp create --id $appId | convertfrom-json).objectId
+az role assignment create --role contributor --subscription $subscriptionId --assignee-object-id  $objectId --assignee-principal-type ServicePrincipal --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName
 
-Note the appId as this is your `Client Id` for workflow use later.
+Write-Host "These are the "secrets" you need to add to GitHub"
+Write-Host "-----------------------------------------------"
+Write-Host "Application Id (ClientId/AppId/AAD_APP_ID): $appId"
+Write-Host "Tenant Id (Directory Id/AAD_TENANT_ID): $($context.tenant.id)"
+Write-Host "Subscription Id (AZURE_SUBSCRIPTION_ID): $subscriptionId"
+Write-Host "-----------------------------------------------"
+```
 
 ### Add federated credentials
 
@@ -24,9 +31,9 @@ Follow [this guide](https://docs.microsoft.com/en-us/azure/developer/github/conn
 
 ### Create GitHub secrets
 
-AAD_APP_ID – Will be the service principal ID from above
-AAD_TENANT_ID – The Azure AD tenant ID (Directory ID) to where the service principal was created
-AZURE_SUBSCRIPTION_ID – Subscription ID of where you want to deploy Terraform resources
+AAD_APP_ID – Will be the app id/client id from above
+AAD_TENANT_ID – The Azure AD tenant Id from above
+AZURE_SUBSCRIPTION_ID – Subscription Id from above
 
 ## Prereqs Terraform
 
