@@ -1,6 +1,6 @@
-# Terraform OpenID Connect to Azure
+# OpenID Connect to Azure
 
-Repository for starting out with Terraform to Azure with OpenID Connect authentication
+Repository for starting out with Terraform and Bicep authenticate to Azure with OpenID Connect.
 
 ## Prereqs OIDC
 
@@ -13,9 +13,9 @@ Repository for starting out with Terraform to Azure with OpenID Connect authenti
 ```pwsh
 $context = get-azcontext
 $subscriptionId = $context.subscription.id
-$appId = (az ad app create --display-name myApp | convertFrom-json).appId
+$appId = (az ad app create --display-name oidc-demo | convertFrom-json).appId
 $objectId = (az ad sp create --id $appId | convertfrom-json).objectId
-az role assignment create --role contributor --subscription $subscriptionId --assignee-object-id  $objectId --assignee-principal-type ServicePrincipal --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroupName
+az role assignment create --role contributor --subscription $subscriptionId --assignee-object-id  $objectId --assignee-principal-type ServicePrincipal --scope /subscriptions/$subscriptionId
 
 Write-Host "These are the "secrets" you need to add to GitHub`n-----------------------------------------------`nApplication Id (ClientId/AppId/AAD_APP_ID): $appId`nTenant Id (Directory Id/AAD_TENANT_ID): $($context.tenant.id)`nSubscription Id (AZURE_SUBSCRIPTION_ID): $subscriptionId`n-----------------------------------------------"
 ```
@@ -36,7 +36,7 @@ Added credential for user `torivara`:
 
 *Could be organization also, but for this demo it is only my personal user.*
 
-Add configuration for `main` branch of `tf-oidc-starter` repository:
+Add configuration for `main` branch of `oidc-starter` repository:
 
 ![](.img/2022-05-13-13-46-11.png)
 
@@ -56,6 +56,8 @@ Authentication from a Pull Request did not work with this setting only, so I nee
 
 ## Prereqs Terraform
 
+You need some basic infrastructure to start with Terraform remote backend state (best practice). This is a simple script for deployment.
+
 - Create Resource Group
 - Create Storage Account
 - Create Storage Account Container
@@ -63,7 +65,7 @@ Authentication from a Pull Request did not work with this setting only, so I nee
 
 ```pwsh
 $randomNumber=(Get-Random -Maximum 10000)
-$appName='terraform-oidc-test-app'
+$appName='oidc-demo'
 $resourceGroupName="tia-testingterraform$randomNumber-rg"
 $subscriptionId=(Get-AzContext).Subscription.Id
 $location='westeurope'
