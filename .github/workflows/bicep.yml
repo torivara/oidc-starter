@@ -1,0 +1,57 @@
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'bicep/*'
+  pull_request:
+    paths:
+    - 'bicep/*'
+  workflow_dispatch:
+
+name: 'Bicep'
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  workingDir: 'bicep'
+
+jobs:
+  bicep:
+    name: 'Bicep'
+    runs-on: ubuntu-latest
+ 
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AAD_APP_ID }}
+        tenant-id: ${{ secrets.AAD_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+    
+    - name: 'Az CLI list resource groups'
+      run: az group list -o table
+    
+    - name: 'Az CLI upgrade bicep'
+      run: az bicep upgrade
+    
+    - name: 'Az CLI build/validate bicep file'
+      run: az bicep build 'main.bicep'
+
+    - name: 'Az CLI what-if bicep deployment'
+      run: az group deployment what-if --resource-group 'rgname' --template-file main.bicep
+    
+    - name: 'Az CLI create bicep deployment'
+      if: github.ref == 'refs/heads/main'
+      run: az group deployment create --name 'bicep-deployment$(New-Guid)' --resource-group 'rgname' --location 'westeurope' --template-file main.bicep
