@@ -59,4 +59,4 @@ jobs:
     - name: 'Az CLI create bicep deployment'
       working-directory: 'bicep'
       if: github.ref == 'refs/heads/main'
-      run: az deployment sub create --name 'bicep-deployment$(New-Guid)' --location 'westeurope' --template-file main.bicep
+      run: az deployment sub create --name 'bicep-deployment' --location 'westeurope' --template-file main.bicep
