@@ -1,3 +1,4 @@
+//trigger
 targetScope = 'subscription'
 
 param parLocation string = 'westeurope'
