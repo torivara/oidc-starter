@@ -47,7 +47,7 @@ jobs:
       run: az bicep upgrade
     
     - name: 'Az CLI build/validate bicep file'
-      run: az bicep build 'main.bicep'
+      run: az bicep build --file 'main.bicep'
 
     - name: 'Az CLI what-if bicep deployment'
       run: az deployment sub what-if --location westeurope --template-file main.bicep

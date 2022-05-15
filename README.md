@@ -28,23 +28,18 @@ Some specific info and tips:
 
 Choose `GitHub Actions deploying Azure resources`
 
-![](.img/2022-05-13-13-45-43.png)
+![](.img/2022-05-15-20-39-46.png)
 
-Added credential for user `torivara`:
+Added credential for `main` branch of repo `oidc-starter` in user/org `torivara` repository:
 
-![](.img/2022-05-13-13-46-01.png)
+![](.img/2022-05-15-20-42-02.png)
 
 *Could be organization also, but for this demo it is only my personal user.*
-
-Add configuration for `main` branch of `oidc-starter` repository:
-
-![](.img/2022-05-13-13-46-11.png)
-
 *Replace these with values from you own, though main branch might be the same, repository name is probably not.*
 
 Authentication from a Pull Request did not work with this setting only, so I needed to add Pull Request entity type also:
 
-![](.img/2022-05-13-13-47-19.png)
+![](.img/2022-05-15-20-42-28.png)
 
 ### Create GitHub secrets
 
@@ -54,7 +49,7 @@ Authentication from a Pull Request did not work with this setting only, so I nee
 - AAD_TENANT_ID – The Azure AD tenant Id from above
 - AZURE_SUBSCRIPTION_ID – Subscription Id from above
 
-## Prereqs Terraform
+## Prereqs for Terraform
 
 You need some basic infrastructure to start with Terraform remote backend state (best practice). This is a simple script for deployment.
 
