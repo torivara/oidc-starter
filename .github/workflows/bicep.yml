@@ -53,6 +53,7 @@ jobs:
       run: az bicep build --file 'main.bicep'
 
     - name: 'Az CLI what-if bicep deployment'
+      if: github.event_name == 'pull_request'
       working-directory: 'bicep'
       run: az deployment sub what-if --location westeurope --template-file main.bicep
     
