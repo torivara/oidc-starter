@@ -1,0 +1,72 @@
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'terraform/*'
+  pull_request:
+    paths:
+    - 'terraform/*'
+  workflow_dispatch:
+
+name: 'Terraform'
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  workingDir: 'terraform'
+  OIDC: false
+  ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AAD_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+ 
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: 'Az CLI login'
+      if: (env.OIDC == true)
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AAD_APP_ID }}
+        tenant-id: ${{ secrets.AAD_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+      
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.1.9
+
+    - name: Terraform Format
+      working-directory: ${{ env.workingDir }}
+      run: terraform fmt
+
+    - name: Terraform Init
+      working-directory: ${{ env.workingDir }}
+      run: terraform init
+
+    - name: Terraform Validate
+      working-directory: ${{ env.workingDir }}
+      run: terraform validate
+    
+    - name: Terraform Plan
+      working-directory: ${{ env.workingDir }}
+      run: terraform plan -out tfplan
+    
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      working-directory: ${{ env.workingDir }}
+      run: terraform apply --auto-approve "tfplan"
