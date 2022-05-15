@@ -1,3 +1,4 @@
+//triggering comment
 targetScope = 'subscription'
 
 param parLocation string = 'westeurope'
