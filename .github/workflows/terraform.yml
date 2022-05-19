@@ -21,11 +21,6 @@ defaults:
 
 env:
   workingDir: 'terraform'
-  OIDC: false
-  ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.AAD_CLIENT_SECRET }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
 
 jobs:
   terraform:
@@ -38,7 +33,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: 'Az CLI login'
-      if: (env.OIDC == true)
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AAD_APP_ID }}
@@ -48,7 +42,7 @@ jobs:
       
     - uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.1.9
+        terraform_version: 1.2.0
 
     - name: Terraform Format
       working-directory: ${{ env.workingDir }}
