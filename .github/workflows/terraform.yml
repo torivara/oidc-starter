@@ -21,6 +21,7 @@ defaults:
 
 env:
   terraformDir: 'terraform'
+  TF_LOG: 'trace'
 
 jobs:
   terraform:
