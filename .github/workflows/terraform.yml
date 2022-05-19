@@ -43,29 +43,20 @@ jobs:
     - uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.2.0
+        terraform_wrapper: false
 
     - name: Terraform Format
-      run: |
-        cd ${{ env.terraformDir }}
-        terraform fmt
+      run: terraform fmt
 
     - name: Terraform Init
-      run: |
-        cd ${{ env.terraformDir }}
-        terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
+      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
 
     - name: Terraform Validate
-      run: |
-        cd ${{ env.terraformDir }}
-        terraform validate
+      run: terraform validate
     
     - name: Terraform Plan
-      run: |
-        cd ${{ env.terraformDir }}
-        terraform plan -out tfplan
+      run: terraform plan -out tfplan
     
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      run: |
-        cd ${{ env.terraformDir }}
-        terraform apply --auto-approve "tfplan"
+      run: terraform apply --auto-approve "tfplan"
