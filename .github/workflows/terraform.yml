@@ -18,7 +18,9 @@ permissions:
 defaults:
   run:
     shell: pwsh
-    working-directory: 'terraform'
+
+env:
+  terraformDir: 'terraform'
 
 jobs:
   terraform:
@@ -43,17 +45,27 @@ jobs:
         terraform_version: 1.2.0
 
     - name: Terraform Format
-      run: terraform fmt
+      run: |
+        cd ${{ env.terraformDir }}
+        terraform fmt
 
     - name: Terraform Init
-      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
+      run: |
+        cd ${{ env.terraformDir }}
+        terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
 
     - name: Terraform Validate
-      run: terraform validate
+      run: |
+        cd ${{ env.terraformDir }}
+        terraform validate
     
     - name: Terraform Plan
-      run: terraform plan -out tfplan
+      run: |
+        cd ${{ env.terraformDir }}
+        terraform plan -out tfplan
     
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      run: terraform apply --auto-approve "tfplan"
+      run: |
+        cd ${{ env.terraformDir }}
+        terraform apply --auto-approve "tfplan"
