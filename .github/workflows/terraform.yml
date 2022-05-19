@@ -18,7 +18,6 @@ permissions:
 defaults:
   run:
     shell: pwsh
-    working-directory: 'terraform'
 
 env:
   terraformDir: 'terraform'
