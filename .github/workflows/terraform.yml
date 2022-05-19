@@ -50,7 +50,7 @@ jobs:
 
     - name: Terraform Init
       working-directory: ${{ env.workingDir }}
-      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}"
+      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
 
     - name: Terraform Validate
       working-directory: ${{ env.workingDir }}
