@@ -8,10 +8,18 @@ terraform {
     subscription_id      = "cf824313-8235-4ab9-8c52-83518a61f62f"
     tenant_id            = "0c178fd5-1459-41d5-8731-3908efd207ea"
   }
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "= 3.7.0"
+    }
+  }
 }
 
 provider "azurerm" {
   features {}
+  use_oidc = true
 }
 
 data "azurerm_client_config" "current" {}
