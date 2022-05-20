@@ -20,6 +20,11 @@ defaults:
     shell: pwsh
     working-directory: 'terraform'
 
+env:
+  ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
+
 jobs:
   terraform:
     name: 'Terraform'
@@ -46,17 +51,13 @@ jobs:
       run: terraform fmt
 
     - name: Terraform Init
-      run: |
-        terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
-        terraform plan
+      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
 
     - name: Terraform Validate
       run: terraform validate
     
     - name: Terraform Plan
-      run: |
-        terraform -version
-        terraform plan -out tfplan
+      run: terraform plan -out tfplan
     
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
