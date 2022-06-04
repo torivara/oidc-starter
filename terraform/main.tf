@@ -1,4 +1,3 @@
-//trigger
 terraform {
   backend "azurerm" {
     resource_group_name  = "tia-testingterraform2313-rg"
