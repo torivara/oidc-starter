@@ -14,8 +14,8 @@ repos:
     - id: terraform_tflint
       args:
       - --args=--enable-rule=terraform_documented_variables
-- repo: git://github.com/pre-commit/pre-commit-hooks
-  rev: v3.2.0
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.2.0  # Use the ref you want to point at
   hooks:
     - id: check-merge-conflict
     - id: trailing-whitespace
