@@ -29,7 +29,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
- 
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -42,11 +42,11 @@ jobs:
         tenant-id: ${{ secrets.AAD_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
-      
+
     - uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.2.0
-    
+
     - name: Terraform Format
       run: terraform fmt
 
@@ -55,10 +55,10 @@ jobs:
 
     - name: Terraform Validate
       run: terraform validate
-    
+
     - name: Terraform Plan
       run: terraform plan -out tfplan
-    
+
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       run: terraform apply --auto-approve "tfplan"
