@@ -15,6 +15,12 @@ terraform {
   }
 }
 
+variable "input1" {
+  description = "This is a test variable input"
+  type        = string
+  default     = "defaultValue"
+}
+
 provider "azurerm" {
   features {}
   use_oidc = true
