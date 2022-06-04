@@ -1,5 +1,7 @@
 # OpenID Connect to Azure
 
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
 Repository for starting out with OpenId Connect to Azure from GitHub Actions.
 
 ## Prereqs OIDC
