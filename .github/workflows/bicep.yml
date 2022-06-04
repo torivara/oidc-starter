@@ -23,7 +23,16 @@ env:
   workingDir: 'bicep'
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - run: |
+        docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:latest run -a
   bicep:
+    needs: pre-commit
     name: 'Bicep'
     runs-on: ubuntu-latest
 
