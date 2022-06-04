@@ -1,6 +1,6 @@
 name: Common issues check
 
-on: 
+on:
   workflow_dispatch:
 
 jobs:
