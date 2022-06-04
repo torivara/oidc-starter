@@ -1,9 +1,7 @@
 name: pre-commit-auto
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   pre-commit:
@@ -13,6 +11,12 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-python@v2
+    - name: set PY
+      run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - uses: pre-commit/action@v2.0.3
       with:
         extra_args: --all-files
