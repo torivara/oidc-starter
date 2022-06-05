@@ -32,7 +32,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_input1"></a> [input1](#input\_input1) | This is a test variable input | `string` | `"defaultValue"` | no |
-| <a name="input_input2"></a> [input2](#input\_input2) | This is a test variable input | `string` | `"defaultValue"` | no |
 
 ## Outputs
 
