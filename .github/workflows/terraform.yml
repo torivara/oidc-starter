@@ -34,6 +34,7 @@ jobs:
         fetch-depth: 0
     - run: docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:latest run -a
       shell: bash
+      working-directory: ${{ env.GITHUB_WORKSPACE }}
       name: Run pre-commit for all files
   terraform:
     needs: pre-commit
