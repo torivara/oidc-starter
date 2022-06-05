@@ -12,12 +12,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Run the build process with Docker
-      uses: addnab/docker-run-action@v3
-      with:
-          image: ghcr.io/antonbabenko/pre-commit-terraform:latest
-          options: -v ${{ github.workspace }}:/lint -w /lint
-          run: run -a
+    - run: docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:latest run -a
+      name: Run the build process with Docker
     # - uses: actions/setup-python@v2
     #   name: Setup Python
     # - run: |
