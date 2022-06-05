@@ -1,4 +1,4 @@
-name: pre-commit-auto
+name: pre-commit-manual
 
 on:
   pull_request:
