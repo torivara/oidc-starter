@@ -67,8 +67,11 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
-    - name: Terraform Plan
-      run: terraform plan -out tfplan
+    - name: Terraform Plan and validate
+      run: |
+        terraform plan -out tfplan
+        terraform show -json tfplan > tfplan.json
+        docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
