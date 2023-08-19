@@ -20,26 +20,16 @@ defaults:
     shell: pwsh
     working-directory: 'terraform'
 
-env:
-  ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
-
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - run: docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:latest run -a
-      shell: bash
-      working-directory: ${{ env.GITHUB_WORKSPACE }}
-      name: Run pre-commit for all files
-  terraform:
-    needs: pre-commit
+  terraform_plan:
     name: 'Terraform'
+    environment: 'test'
     runs-on: ubuntu-latest
+    if: github.ref  != 'refs/heads/main'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -53,26 +43,51 @@ jobs:
         tenant-id: ${{ secrets.AAD_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
-
+    
     - uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.2.0
+        terraform_version: 1.5.5
 
     - name: Terraform Format
       run: terraform fmt
 
     - name: Terraform Init
       run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
-
-    - name: Terraform Validate
-      run: terraform validate
-
+    
     - name: Terraform Plan and validate
       run: |
         terraform plan -out tfplan
         terraform show -json tfplan > tfplan.json
         docker run --volume "${{ env.GITHUB_WORKSPACE }}":/tf bridgecrew/checkov -f tfplan.json
+  terraform_apply:
+    name: 'Terraform'
+    environment: 'production'
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AAD_APP_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AAD_TENANT_ID }}
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AAD_APP_ID }}
+        tenant-id: ${{ secrets.AAD_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+    
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.5
+
+    - name: Terraform Init
+      run: terraform init -backend-config "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -backend-config "tenant_id=${{ secrets.AAD_TENANT_ID }}" -backend-config "client_id=${{ secrets.AAD_APP_ID }}"
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply --auto-approve "tfplan"
+      run: terraform apply --auto-approve
