@@ -62,3 +62,5 @@ resource "azurerm_subnet" "subnet2" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.128/25"]
 }
+
+#trigger
