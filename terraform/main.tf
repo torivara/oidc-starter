@@ -1,6 +1,6 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "teraform-oidc-state"
+    resource_group_name  = "terraform-oidc-state"
     storage_account_name = "tiaterraformoidc"
     container_name       = "terraformstate"
     key                  = "terraformstate.tfstate"
