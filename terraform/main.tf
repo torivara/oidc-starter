@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "tia-testingterraform2313-rg"
-    storage_account_name = "testingterraform2313"
+    resource_group_name  = "teraform-oidc-state"
+    storage_account_name = "tiaterraformoidc"
     container_name       = "terraformstate"
     key                  = "terraformstate.tfstate"
     use_oidc             = true
