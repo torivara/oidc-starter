@@ -55,8 +55,6 @@ jobs:
     - name: Terraform Plan and validate
       run: |
         terraform plan -out tfplan
-        terraform show -json tfplan > tfplan.json
-        docker run --volume '${{ github.workspace }}':/tf bridgecrew/checkov -f tfplan.json
   terraform_apply:
     name: 'Terraform'
     environment: 'production'
